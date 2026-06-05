@@ -22,5 +22,5 @@ struct ScavengerItem: Identifiable {
     var found:Bool = false
 
     // Image selected by user
-    var imageName:String = ""
+    var imageName:String
 }
