@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "pharmacy.imageset.png",
+      "filename" : "pharmacy.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "pharmacy.imageset@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "pharmacy.imageset@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "bakery.imageset.png",
+      "filename" : "bakery.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "bakery.imageset@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "bakery.imageset@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

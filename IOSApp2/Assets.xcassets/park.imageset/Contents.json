@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "park.imageset.png",
+      "filename" : "park.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "park.imageset@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "park.imageset@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

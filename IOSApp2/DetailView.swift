@@ -1,16 +1,26 @@
-// =========================
-//  DetailView.swift
-// =========================
+
+// ===========================
+// DetailView.swift
+// IOSApp2
+// ===========================
+// Shows scavenger hunt details
+// Allows selecting found picture
+// ===========================
 
 import SwiftUI
 
 struct DetailView: View {
 
+    // Receives selected scavenger item
     @Binding var item: ScavengerItem
 
-    // controls image picker popup
+    // Controls popup sheet visibility
     @State private var showChoices = false
 
+    // Stores image selected by user
+    @State private var foundImage:String = ""
+
+    // List of all possible images
     let imageChoices = [
 
         "coffee",
@@ -28,91 +38,179 @@ struct DetailView: View {
 
     var body: some View {
 
-        VStack(spacing:20) {
+        // ScrollView allows screen scrolling
+        ScrollView {
 
-            Text(item.title)
+            VStack(spacing:20) {
 
-                .font(.largeTitle)
+                // ================================================
+                // Item title
+                // ================================================
 
-            Text(item.clue)
+                Text(item.title)
 
-            // Current selected image
+                    .font(.largeTitle)
 
-            Image(item.imageName)
+                    .bold()
 
-                .resizable()
 
-                .scaledToFit()
+                // ================================================
+                // Item clue
+                // ================================================
 
-                .frame(height:200)
+                Text(item.clue)
 
-            Toggle(
+                    .font(.headline)
 
-                "Mark As Found",
 
-                isOn:$item.found
+                // ===============================================
+                // Combo image shown for every page
+                // Add your collage image as:
+                // combo.imageset
+                // ===============================================
 
-            )
+                Image("combo")
 
-            Button("Upload Photo") {
+                    .resizable()
 
-                showChoices = true
+                    .scaledToFit()
+
+                    .frame(height:220)
+
+
+                // ================================================
+                // Mark item found toggle
+                // ================================================
+
+                Toggle(
+
+                    "Mark As Found",
+
+                    isOn:$item.found
+
+                )
+
+                .padding()
+
+
+                // ===============================================
+                // Opens image selection popup
+                // ================================================
+
+                Button("Upload Photo") {
+
+                    showChoices = true
+
+                }
+
+                .buttonStyle(.borderedProminent)
+
+
+                // ==================================================
+                // Shows selected individual picture
+                // ==================================================
+                
+                if foundImage != "" {
+
+                    Text("Found Photo")
+
+                        .font(.headline)
+
+                    Image(foundImage)
+
+                        .resizable()
+
+                        .scaledToFit()
+
+                        .frame(height:180)
+
+                        .cornerRadius(12)
+
+                }
+
+
+                Spacer()
 
             }
 
-            .buttonStyle(.borderedProminent)
-
-            Spacer()
+            .padding()
 
         }
 
-        .padding()
+
+        // ================================================
+        // Popup sheet showing all images
+        // ================================================
 
         .sheet(isPresented:$showChoices) {
 
-            ScrollView {
+            NavigationView {
 
-                LazyVGrid(
+                ScrollView {
 
-                    columns:[
-                        GridItem(.flexible()),
-                        GridItem(.flexible())
-                    ]
+                    LazyVGrid(
 
-                ) {
+                        columns:[
 
-                    ForEach(imageChoices,id:\.self) { image in
+                            GridItem(.flexible()),
 
-                        VStack {
+                            GridItem(.flexible())
 
-                            Image(image)
+                        ],
 
-                                .resizable()
+                        spacing:20
 
-                                .scaledToFit()
+                    ) {
 
-                                .frame(
-                                    width:120,
-                                    height:120
-                                )
+                        // ===============================================
+                        // Creates image grid
+                        // ===============================================
 
-                            Text(image)
+                        ForEach(imageChoices,id:\.self) {
 
-                        }
+                            image in
 
-                        .onTapGesture {
+                            VStack {
 
-                            item.imageName = image
+                                Image(image)
 
-                            showChoices = false
+                                    .resizable()
+
+                                    .scaledToFit()
+
+                                    .frame(
+
+                                        width:120,
+
+                                        height:120
+
+                                    )
+
+                                Text(image)
+
+                            }
+
+                            // ==============================================
+                            // User taps image
+                            // ==============================================
+
+                            .onTapGesture {
+
+                                foundImage = image
+
+                                showChoices = false
+
+                            }
 
                         }
 
                     }
 
+                    .padding()
+
                 }
 
-                .padding()
+                .navigationTitle("Choose Found Item")
 
             }
 
