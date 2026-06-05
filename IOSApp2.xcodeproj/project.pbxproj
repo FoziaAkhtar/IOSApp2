@@ -15,6 +15,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = IOSApp2;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
