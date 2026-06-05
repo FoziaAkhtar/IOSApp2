@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 100;
 	objects = {
 
 /* Begin PBXFileReference section */
@@ -21,10 +21,8 @@
 /* Begin PBXFrameworksBuildPhase section */
 		A4AA09732FD2513C008D3E1F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -58,14 +56,10 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			fileSystemSynchronizedGroups = (
 				A4AA09782FD2513C008D3E1F /* IOSApp2 */,
 			);
 			name = IOSApp2;
-			packageProductDependencies = (
-			);
 			productName = IOSApp2;
 			productReference = A4AA09762FD2513C008D3E1F /* IOSApp2.app */;
 			productType = "com.apple.product-type.application";
@@ -95,7 +89,7 @@
 			);
 			mainGroup = A4AA096D2FD2513C008D3E1F;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
+			preferredProjectObjectVersion = 100;
 			productRefGroup = A4AA09772FD2513C008D3E1F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -108,25 +102,21 @@
 /* Begin PBXResourcesBuildPhase section */
 		A4AA09742FD2513C008D3E1F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A4AA09722FD2513C008D3E1F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		A4AA097F2FD2513D008D3E1F /* Debug */ = {
+		A4AA097F2FD2513D008D3E1F /* Debug configuration for PBXProject "IOSApp2" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -189,7 +179,7 @@
 			};
 			name = Debug;
 		};
-		A4AA09802FD2513D008D3E1F /* Release */ = {
+		A4AA09802FD2513D008D3E1F /* Release configuration for PBXProject "IOSApp2" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -245,7 +235,7 @@
 			};
 			name = Release;
 		};
-		A4AA09822FD2513D008D3E1F /* Debug */ = {
+		A4AA09822FD2513D008D3E1F /* Debug configuration for PBXNativeTarget "IOSApp2" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -278,7 +268,7 @@
 			};
 			name = Debug;
 		};
-		A4AA09832FD2513D008D3E1F /* Release */ = {
+		A4AA09832FD2513D008D3E1F /* Release configuration for PBXNativeTarget "IOSApp2" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -316,19 +306,17 @@
 		A4AA09712FD2513C008D3E1F /* Build configuration list for PBXProject "IOSApp2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A4AA097F2FD2513D008D3E1F /* Debug */,
-				A4AA09802FD2513D008D3E1F /* Release */,
+				A4AA097F2FD2513D008D3E1F /* Debug configuration for PBXProject "IOSApp2" */,
+				A4AA09802FD2513D008D3E1F /* Release configuration for PBXProject "IOSApp2" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		A4AA09812FD2513D008D3E1F /* Build configuration list for PBXNativeTarget "IOSApp2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A4AA09822FD2513D008D3E1F /* Debug */,
-				A4AA09832FD2513D008D3E1F /* Release */,
+				A4AA09822FD2513D008D3E1F /* Debug configuration for PBXNativeTarget "IOSApp2" */,
+				A4AA09832FD2513D008D3E1F /* Release configuration for PBXNativeTarget "IOSApp2" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
