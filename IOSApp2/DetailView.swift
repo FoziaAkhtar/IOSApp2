@@ -2,21 +2,20 @@
 // =============================
 // DetailView.swift
 // IOSApp2
-// Assignment 4 (A+ Version)
+// Assignment 4 (Polished A+ Version)
 // =============================
 //
-// Purpose:
+// PURPOSE:
 //
-// This screen shows detailed information
-// about a scavenger hunt item.
+// This screen shows detailed information about a scavenger hunt item.
 //
-// User can:
-// • Read clue
-// • View main image
-// • Mark item as found
-// • Select a found image
-// • Zoom image (pinch gesture)
-// • See animations and feedback
+// The user can:
+// • Read the clue
+// • View the main image
+// • Mark the item as found
+// • Select a "found photo"
+// • Use pinch-to-zoom gesture
+// • See animations and visual feedback
 //
 // =============================
 
@@ -24,38 +23,27 @@ import SwiftUI
 
 struct DetailView: View {
 
-    // ==========================================
-    // Binding from ContentView
+    // =====================================================
+    // BINDING: Connected to ContentView data model
     //
-    // This allows changes here (found = true)
-    // to update the main list automatically
-    // ==========================================
+    // This allows updates here (e.g., item.found = true)
+    // to instantly update the main list screen.
+    // =====================================================
     @Binding var item: ScavengerItem
 
-    // ==========================================
-    // Controls sheet for selecting image
-    // ==========================================
+    // Controls whether image selection sheet is visible
     @State private var showChoices = false
 
-    // ==========================================
-    // Stores selected "found" image
-    // ==========================================
+    // Stores the image selected by the user
     @State private var foundImage = ""
 
-    // ==========================================
-    // Zoom scale for pinch gesture
-    // ==========================================
+    // Controls zoom level for pinch gesture
     @State private var scale: CGFloat = 1.0
 
-    // ==========================================
-    // Controls pulse animation
-    // ==========================================
+    // Controls simple pulse animation for UI feedback
     @State private var animate = false
 
-    // ==========================================
-    // Available images for selection
-    // ==========================================
-    
+    // List of selectable images for scavenger hunt items
     let imageChoices = [
         "coffee",
         "restaurant",
@@ -75,9 +63,10 @@ struct DetailView: View {
 
             VStack(spacing: 25) {
 
-                // ==========================
-                // TITLE
-                // ==========================
+                // =====================================================
+                // ITEM TITLE
+                // Displays the name of the scavenger hunt location/item
+                // =====================================================
                 
                 Text(item.title)
                     .font(.largeTitle)
@@ -85,18 +74,24 @@ struct DetailView: View {
                     .foregroundColor(.blue)
                     .padding(.top)
 
-                // ==========================
-                // CLUE TEXT
-                // ==========================
+                // =====================================================
+                // ITEM CLUE
+                // Gives the user a hint about what to find
+                // =====================================================
                 
                 Text(item.clue)
                     .font(.headline)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
 
-                // ==========================
-                // MAIN IMAGE WITH ANIMATION + ZOOM
-                // ==========================
+                // =====================================================
+                // MAIN IMAGE SECTION
+                //
+                // Features:
+                // • Image display
+                // • Zoom gesture (pinch)
+                // • Pulse animation effect
+                // =====================================================
                 
                 Image("combo")
                     .resizable()
@@ -105,11 +100,10 @@ struct DetailView: View {
                     .cornerRadius(20)
                     .shadow(radius: 8)
 
-                    // IMPORTANT FIX:
-                    // Combine zoom + pulse correctly
+                    // Combine pinch zoom + pulse animation
                     .scaleEffect(scale * (animate ? 1.02 : 1))
 
-                    // PINCH ZOOM GESTURE
+                    // Pinch-to-zoom gesture
                     .gesture(
                         MagnificationGesture()
                             .onChanged { value in
@@ -117,7 +111,7 @@ struct DetailView: View {
                             }
                     )
 
-                    // PULSE ANIMATION
+                    // Start pulse animation when view appears
                     .onAppear {
                         withAnimation(
                             .easeInOut(duration: 1)
@@ -127,9 +121,12 @@ struct DetailView: View {
                         }
                     }
 
-                // ==========================
+                // =====================================================
                 // MARK AS FOUND TOGGLE
-                // ==========================
+                //
+                // Allows user to mark the item as completed
+                // Updates shared data via Binding
+                // =====================================================
                 
                 Toggle("Mark As Found", isOn: $item.found)
                     .padding()
@@ -137,9 +134,11 @@ struct DetailView: View {
                     .cornerRadius(12)
                     .padding(.horizontal)
 
-                // ==========================
-                // SELECT IMAGE BUTTON
-                // ==========================
+                // =====================================================
+                // SELECT FOUND IMAGE BUTTON
+                //
+                // Opens a sheet where user chooses a photo
+                // =====================================================
                 
                 Button {
                     showChoices = true
@@ -152,9 +151,16 @@ struct DetailView: View {
                 .buttonStyle(.borderedProminent)
                 .padding(.horizontal)
 
-                // ==========================
-                // FOUND IMAGE DISPLAY (A+ FIXED)
-                // ==========================
+                // =====================================================
+                // FOUND IMAGE DISPLAY (A+ POLISHED SECTION)
+                //
+                // Only appears when user selects an image
+                // Includes:
+                // • Circular crop
+                // • Glow effect
+                // • Animation
+                // =====================================================
+                
                 if foundImage != "" {
 
                     Divider()
@@ -164,19 +170,13 @@ struct DetailView: View {
 
                     ZStack {
 
-                        // ======================
-                        // GLOW BACKGROUND (A+ EFFECT)
-                        // ======================
-                        
+                        // Background glow effect (visual enhancement)
                         Circle()
                             .fill(Color.blue.opacity(0.2))
                             .frame(width: 220, height: 220)
                             .blur(radius: 3)
 
-                        // ======================
-                        // MAIN FOUND IMAGE
-                        // ======================
-                        
+                        // Main circular image display
                         Image(foundImage)
                             .resizable()
                             .scaledToFill()
@@ -188,16 +188,18 @@ struct DetailView: View {
                                     .stroke(Color.blue, lineWidth: 4)
                             )
                             .shadow(radius: 10)
+
+                            // Subtle pulse animation for emphasis
                             .scaleEffect(animate ? 1.05 : 1)
-                            .animation(.easeInOut(duration: 1).repeatForever(),
-                                       value: animate)
+                            .animation(
+                                .easeInOut(duration: 1)
+                                .repeatForever(autoreverses: true),
+                                value: animate
+                            )
                     }
 
-                    // ==========================
-                    // SUCCESS MESSAGE
-                    // ==========================
-                    
-                    Text("Great job! Item Found!")
+                    // Success message shown after selection
+                    Text("Great job! Item Found! 🎉")
                         .foregroundColor(.green)
                         .bold()
                 }
@@ -207,9 +209,11 @@ struct DetailView: View {
             .padding()
         }
 
-        // ==========================
+        // =====================================================
         // IMAGE SELECTION SHEET
-        // ==========================
+        //
+        // Displays grid of available images for selection
+        // =====================================================
         
         .sheet(isPresented: $showChoices) {
 
@@ -240,6 +244,7 @@ struct DetailView: View {
                                     .font(.caption)
                             }
 
+                            // User selects an image
                             .onTapGesture {
 
                                 // Save selected image
@@ -248,7 +253,7 @@ struct DetailView: View {
                                 // Mark item as found in main list
                                 item.found = true
 
-                                // Close sheet
+                                // Close selection sheet
                                 showChoices = false
                             }
                         }
