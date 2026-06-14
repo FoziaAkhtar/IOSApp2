@@ -2,25 +2,78 @@
 // =============================
 // DetailView.swift
 // IOSApp2
+// Assignment 4
 // =============================
-// Shows scavenger hunt details
-// Allows selecting found picture
-// ==============================
+//
+// Purpose:
+//
+// Displays details for one
+// scavenger hunt item.
+//
+// Features:
+//
+// • Shows title and clue
+// • Displays scavenger image
+// • Allows item to be marked found
+// • Lets user select a found image
+// • Shows selected image
+// • Zoom gesture
+// • Animation
+// • Grid layout
+// • Styled UI
+//
+// Concepts Demonstrated:
+//
+// • @Binding
+// • @State
+// • ScrollView
+// • LazyVGrid
+// • Sheet
+// • Gesture
+// • Animation
+// • Image Styling
+//
+// =============================
 
 import SwiftUI
 
 struct DetailView: View {
 
-    // Receives selected scavenger item
+    // ==========================================
+    // Receives selected scavenger hunt item
+    // from ContentView
+    // ==========================================
+
     @Binding var item: ScavengerItem
 
-    // Controls popup sheet visibility
+    // ==========================================
+    // Controls image selection popup
+    // ==========================================
+
     @State private var showChoices = false
 
+    // ==========================================
     // Stores image selected by user
-    @State private var foundImage:String = ""
+    // ==========================================
 
-    // List of all possible images
+    @State private var foundImage = ""
+
+    // ==========================================
+    // Used for zoom gesture
+    // ==========================================
+
+    @State private var scale: CGFloat = 1.0
+
+    // ==========================================
+    // Used for simple animation
+    // ==========================================
+
+    @State private var animate = false
+
+    // ==========================================
+    // Available scavenger hunt images
+    // ==========================================
+
     let imageChoices = [
 
         "coffee",
@@ -38,14 +91,13 @@ struct DetailView: View {
 
     var body: some View {
 
-        // ScrollView allows screen scrolling
         ScrollView {
 
-            VStack(spacing:20) {
+            VStack(spacing: 25) {
 
-                // ================================================
-                // Item title
-                // ================================================
+                // ==================================
+                // Item Title
+                // ==================================
 
                 Text(item.title)
 
@@ -53,21 +105,30 @@ struct DetailView: View {
 
                     .bold()
 
+                    .foregroundColor(.blue)
 
-                // ================================================
-                // Item clue
-                // ================================================
+                    .padding(.top)
+
+                // ==================================
+                // Item Clue
+                // ==================================
 
                 Text(item.clue)
 
                     .font(.headline)
 
+                    .multilineTextAlignment(.center)
 
-                // ===============================================
-                // Combo image shown for every page
-                // Add your collage image as:
-                // combo.imageset
-                // ===============================================
+                    .padding(.horizontal)
+
+                // ==================================
+                // Main Scavenger Hunt Image
+                //
+                // Demonstrates:
+                // • Image Styling
+                // • Animation
+                // • Gesture
+                // ==================================
 
                 Image("combo")
 
@@ -75,42 +136,109 @@ struct DetailView: View {
 
                     .scaledToFit()
 
-                    .frame(height:220)
+                    .frame(height: 220)
 
+                    .cornerRadius(20)
 
-                // ================================================
-                // Mark item found toggle
-                // ================================================
+                    .shadow(radius: 8)
+
+                    .scaleEffect(scale)
+
+                    .scaleEffect(animate ? 1.02 : 1)
+
+                    .gesture(
+
+                        MagnificationGesture()
+
+                            .onChanged {
+
+                                scale = $0
+
+                            }
+
+                    )
+
+                    .onAppear {
+
+                        withAnimation(
+
+                            .easeInOut(duration: 1)
+
+                            .repeatForever(
+
+                                autoreverses: true
+
+                            )
+
+                        ) {
+
+                            animate = true
+
+                        }
+
+                    }
+
+                // ==================================
+                // Found Toggle
+                // ==================================
 
                 Toggle(
 
                     "Mark As Found",
 
-                    isOn:$item.found
+                    isOn: $item.found
 
                 )
 
                 .padding()
 
+                .background(
 
-                // ===============================================
-                // Opens image selection popup
-                // ================================================
+                    Color.blue.opacity(0.1)
 
-                Button("Upload Photo") {
+                )
+
+                .cornerRadius(12)
+
+                .padding(.horizontal)
+
+                // ==================================
+                // Upload Button
+                // ==================================
+
+                Button {
 
                     showChoices = true
+
+                } label: {
+
+                    Label(
+
+                        "Select Found Photo",
+
+                        systemImage: "photo"
+
+                    )
+
+                    .font(.headline)
+
+                    .padding()
+
+                    .frame(maxWidth: .infinity)
 
                 }
 
                 .buttonStyle(.borderedProminent)
 
+                .padding(.horizontal)
 
-                // ==================================================
-                // Shows selected individual picture
-                // ==================================================
-                
+                // ==================================
+                // Show selected image
+                // ==================================
+
                 if foundImage != "" {
+
+                    Divider()
 
                     Text("Found Photo")
 
@@ -120,14 +248,45 @@ struct DetailView: View {
 
                         .resizable()
 
-                        .scaledToFit()
+                        .scaledToFill()
 
-                        .frame(height:180)
+                        .frame(
 
-                        .cornerRadius(12)
+                            width: 200,
+
+                            height: 200
+
+                        )
+
+                        .clipShape(Circle())
+
+                        .overlay(
+
+                            Circle()
+
+                                .stroke(
+
+                                    Color.blue,
+
+                                    lineWidth: 4
+
+                                )
+
+                        )
+
+                        .shadow(radius: 8)
+
+                    // ==============================
+                    // Found confirmation message
+                    // ==============================
+
+                    Text("Great job! Item Found!")
+
+                        .foregroundColor(.green)
+
+                        .bold()
 
                 }
-
 
                 Spacer()
 
@@ -137,20 +296,23 @@ struct DetailView: View {
 
         }
 
+        // ==========================================
+        // Image Selection Sheet
+        // ==========================================
 
-        // ================================================
-        // Popup sheet showing all images
-        // ================================================
-
-        .sheet(isPresented:$showChoices) {
+        .sheet(isPresented: $showChoices) {
 
             NavigationView {
 
                 ScrollView {
 
+                    // ==============================
+                    // Grid Layout
+                    // ==============================
+
                     LazyVGrid(
 
-                        columns:[
+                        columns: [
 
                             GridItem(.flexible()),
 
@@ -158,17 +320,17 @@ struct DetailView: View {
 
                         ],
 
-                        spacing:20
+                        spacing: 20
 
                     ) {
 
-                        // ===============================================
-                        // Creates image grid
-                        // ===============================================
+                        ForEach(
 
-                        ForEach(imageChoices,id:\.self) {
+                            imageChoices,
 
-                            image in
+                            id: \.self
+
+                        ) { image in
 
                             VStack {
 
@@ -180,23 +342,31 @@ struct DetailView: View {
 
                                     .frame(
 
-                                        width:120,
+                                        width: 120,
 
-                                        height:120
+                                        height: 120
 
                                     )
 
+                                    .cornerRadius(12)
+
+                                    .shadow(radius: 3)
+
                                 Text(image)
+
+                                    .font(.caption)
 
                             }
 
-                            // ==============================================
-                            // User taps image
-                            // ==============================================
+                            // ==========================
+                            // User selects image
+                            // ==========================
 
                             .onTapGesture {
 
                                 foundImage = image
+
+                                item.found = true
 
                                 showChoices = false
 
@@ -210,11 +380,45 @@ struct DetailView: View {
 
                 }
 
-                .navigationTitle("Choose Found Item")
+                .navigationTitle(
+
+                    "Choose Found Item"
+
+                )
 
             }
 
         }
+
+    }
+
+}
+
+// ==========================================
+// Preview
+// ==========================================
+
+struct DetailView_Previews: PreviewProvider {
+
+    static var previews: some View {
+
+        DetailView(
+
+            item: .constant(
+
+                ScavengerItem(
+
+                    title: "Coffee Shop",
+
+                    clue: "Find a local coffee shop",
+
+                    imageName: "coffee"
+
+                )
+
+            )
+
+        )
 
     }
 
