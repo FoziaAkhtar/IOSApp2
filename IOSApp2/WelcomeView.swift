@@ -2,7 +2,6 @@
 // =============================
 // WelcomeView.swift
 // IOSApp2
-// Assignment 4
 // =============================
 //
 // PURPOSE:
