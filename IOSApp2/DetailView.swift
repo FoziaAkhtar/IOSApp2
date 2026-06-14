@@ -1,49 +1,78 @@
 
-// =============================
+// =============================================
+// IOSApp2 - Scavenger Hunt App
 // DetailView.swift
-// IOSApp2
-// =============================
+// =============================================
 //
 // PURPOSE:
 //
-// This screen shows details for a scavenger hunt item.
+// This screen shows detailed information for
+// a selected scavenger hunt item.
 //
 // USER CAN:
-// • View clue
-// • Select a photo
+// • Read clue
+// • Select an image
 // • Mark item as found
-// • See feedback (correct / wrong)
+// • Get feedback (correct / wrong)
+// • View selected image in a styled circle
 //
-// =============================
+// =============================================
 
 import SwiftUI
 
 struct DetailView: View {
 
-    // =====================================================
-    // BINDING: Connects this item to ContentView
+    // =========================================
+    // BINDING: CONNECTS TO MAIN LIST (ContentView)
     //
-    // Any change here updates main list automatically
-    // =====================================================
+    // Any change here updates the main screen
+    // automatically
+    // =========================================
     
     @Binding var item: ScavengerItem
 
-    // Controls image selection sheet
+    // =========================================
+    // CONTROLS IMAGE SELECTION SHEET
+    // =========================================
+    
     @State private var showChoices = false
 
-    // Stores selected image name
+    // =========================================
+    // STORES IMAGE FOR DISPLAY PURPOSE
+    // (What user selected visually)
+    // =========================================
+    
     @State private var foundImage = ""
 
-    // Controls zoom gesture
+    // =========================================
+    // STORES IMAGE FOR LOGIC CHECK
+    // (Used to compare with correct answer)
+    // =========================================
+    
+    @State private var selectedImage = ""
+
+    // =========================================
+    // CONTROLS PINCH ZOOM SCALE
+    // =========================================
+    
     @State private var scale: CGFloat = 1.0
 
-    // Controls simple animation effect
+    // =========================================
+    // CONTROLS PULSE ANIMATION
+    // =========================================
+    
     @State private var animate = false
 
-    // NEW: Message shown to user (correct / wrong)
+    // =========================================
+    // FEEDBACK MESSAGE (CORRECT / WRONG)
+    // =========================================
+    
     @State private var message = ""
 
-    // Available images in the game
+    // =========================================
+    // LIST OF AVAILABLE SCAVENGER IMAGES
+    // =========================================
+    
     let imageChoices = [
         "coffee",
         "restaurant",
@@ -63,9 +92,9 @@ struct DetailView: View {
 
             VStack(spacing: 25) {
 
-                // ==========================
+                // =====================================
                 // ITEM TITLE
-                // ==========================
+                // =====================================
                 
                 Text(item.title)
                     .font(.largeTitle)
@@ -73,19 +102,18 @@ struct DetailView: View {
                     .foregroundColor(.blue)
                     .padding(.top)
 
-                // ==========================
+                // =====================================
                 // ITEM CLUE
-                // ==========================
+                // =====================================
                 
                 Text(item.clue)
                     .font(.headline)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
 
-                // ==========================
-                // MAIN IMAGE
-                // Includes zoom + animation
-                // ==========================
+                // =====================================
+                // MAIN IMAGE (ANIMATED + ZOOM)
+                // =====================================
                 
                 Image("combo")
                     .resizable()
@@ -94,10 +122,10 @@ struct DetailView: View {
                     .cornerRadius(20)
                     .shadow(radius: 8)
 
-                    // Combine pinch zoom + pulse animation
+                    // Combine zoom + pulse animation
                     .scaleEffect(scale * (animate ? 1.02 : 1))
 
-                    // Pinch-to-zoom gesture
+                    // PINCH ZOOM GESTURE
                     .gesture(
                         MagnificationGesture()
                             .onChanged { value in
@@ -105,7 +133,7 @@ struct DetailView: View {
                             }
                     )
 
-                    // Start animation when view appears
+                    // START PULSE ANIMATION
                     .onAppear {
                         withAnimation(
                             .easeInOut(duration: 1)
@@ -115,9 +143,9 @@ struct DetailView: View {
                         }
                     }
 
-                // ==========================
+                // =====================================
                 // MARK AS FOUND TOGGLE
-                // ==========================
+                // =====================================
                 
                 Toggle("Mark As Found", isOn: $item.found)
                     .padding()
@@ -125,9 +153,9 @@ struct DetailView: View {
                     .cornerRadius(12)
                     .padding(.horizontal)
 
-                // ==========================
-                // SELECT IMAGE BUTTON
-                // ==========================
+                // =====================================
+                // BUTTON: OPEN IMAGE PICKER
+                // =====================================
                 
                 Button {
                     showChoices = true
@@ -140,9 +168,9 @@ struct DetailView: View {
                 .buttonStyle(.borderedProminent)
                 .padding(.horizontal)
 
-                // ==========================
-                // FOUND IMAGE DISPLAY
-                // ==========================
+                // =====================================
+                // DISPLAY SELECTED IMAGE (CIRCLE FIXED)
+                // =====================================
                 
                 if foundImage != "" {
 
@@ -153,19 +181,20 @@ struct DetailView: View {
 
                     Image(foundImage)
                         .resizable()
-                        .scaledToFill()
+                        .aspectRatio(contentMode: .fill) // fills circle properly
                         .frame(width: 200, height: 200)
-                        .clipped()
-                        .clipShape(Circle())
+                        .clipShape(Circle()) // makes it circular
                         .overlay(
-                            Circle().stroke(Color.blue, lineWidth: 4)
+                            Circle()
+                                .stroke(Color.blue, lineWidth: 4)
                         )
+                        .clipped() // removes overflow
                         .shadow(radius: 8)
                 }
 
-                // ==========================
-                // FEEDBACK MESSAGE
-                // ==========================
+                // =====================================
+                // FEEDBACK MESSAGE (CORRECT / WRONG)
+                // =====================================
                 
                 if message != "" {
 
@@ -173,7 +202,7 @@ struct DetailView: View {
                         .font(.headline)
                         .padding()
                         .foregroundColor(
-                            item.found ? .green : .red
+                            message.contains("Correct") ? .green : .red
                         )
                 }
 
@@ -182,9 +211,9 @@ struct DetailView: View {
             .padding()
         }
 
-        // ==========================
+        // =====================================
         // IMAGE SELECTION SHEET
-        // ==========================
+        // =====================================
         
         .sheet(isPresented: $showChoices) {
 
@@ -204,6 +233,7 @@ struct DetailView: View {
 
                             VStack {
 
+                                // IMAGE OPTION
                                 Image(image)
                                     .resizable()
                                     .scaledToFit()
@@ -211,33 +241,41 @@ struct DetailView: View {
                                     .cornerRadius(12)
                                     .shadow(radius: 3)
 
+                                // LABEL
                                 Text(image)
                                     .font(.caption)
                             }
 
-                            // ==========================
-                            // FIXED LOGIC (NO HARDCODE)
+                            // =====================================
+                            // CORE LOGIC (FIXED FOR ALL ITEMS)
                             //
-                            // Correct vs Wrong is based ONLY
-                            // on whether item is marked found
-                            // ==========================
+                            // Compares selected image with
+                            // THIS item’s correct image name
+                            //
+                            // NO HARD-CODING → works for all items
+                            // =====================================
                             
                             .onTapGesture {
 
-                                // Save selected image
+                                // Store selected image
+                                selectedImage = image
                                 foundImage = image
 
-                                // If user marked item as found → correct
-                                if item.found {
+                                // CHECK IF CORRECT FOR THIS ITEM
+                                if selectedImage == item.imageName {
 
+                                    // CORRECT SELECTION
+                                    item.found = true
                                     message = "✅ Correct item found!"
 
                                 } else {
 
+                                    // WRONG SELECTION
+                                    item.found = false
                                     message = "❌ Wrong item selected!"
                                 }
 
-                                // Close sheet
+                                // CLOSE SHEET
                                 showChoices = false
                             }
                         }
