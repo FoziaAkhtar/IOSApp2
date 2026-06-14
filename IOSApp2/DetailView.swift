@@ -6,15 +6,13 @@
 //
 // PURPOSE:
 //
-// This screen shows detailed information about a scavenger hunt item.
+// This screen shows details for a scavenger hunt item.
 //
-// The user can:
-// • Read the clue
-// • View the main image
-// • Mark the item as found
-// • Select a "found photo"
-// • Use pinch-to-zoom gesture
-// • See animations and visual feedback
+// USER CAN:
+// • View clue
+// • Select a photo
+// • Mark item as found
+// • See feedback (correct / wrong)
 //
 // =============================
 
@@ -22,47 +20,30 @@ import SwiftUI
 
 struct DetailView: View {
 
-    // ==========================================
-    // Binding from ContentView
-    // Updates main list automatically
-    // ==========================================
+    // =====================================================
+    // BINDING: Connects this item to ContentView
+    //
+    // Any change here updates main list automatically
+    // =====================================================
+    
     @Binding var item: ScavengerItem
 
-    // ==========================================
     // Controls image selection sheet
-    // ==========================================
     @State private var showChoices = false
 
-    // ==========================================
-    // Stores selected image
-    // ==========================================
+    // Stores selected image name
     @State private var foundImage = ""
 
-    // ==========================================
-    // Zoom gesture scale
-    // ==========================================
+    // Controls zoom gesture
     @State private var scale: CGFloat = 1.0
 
-    // ==========================================
-    // Animation control
-    // ==========================================
+    // Controls simple animation effect
     @State private var animate = false
 
-    // ==========================================
-    // NEW: feedback message (correct / wrong)
-    // ==========================================
+    // NEW: Message shown to user (correct / wrong)
     @State private var message = ""
 
-    // ==========================================
-    // Correct answer for this item
-    // (For full project, you can replace this
-    // with item.imageName for better logic)
-    // ==========================================
-    let correctAnswer = "coffee"
-
-    // ==========================================
-    // Available images
-    // ==========================================
+    // Available images in the game
     let imageChoices = [
         "coffee",
         "restaurant",
@@ -83,8 +64,9 @@ struct DetailView: View {
             VStack(spacing: 25) {
 
                 // ==========================
-                // TITLE
+                // ITEM TITLE
                 // ==========================
+                
                 Text(item.title)
                     .font(.largeTitle)
                     .bold()
@@ -92,8 +74,9 @@ struct DetailView: View {
                     .padding(.top)
 
                 // ==========================
-                // CLUE
+                // ITEM CLUE
                 // ==========================
+                
                 Text(item.clue)
                     .font(.headline)
                     .multilineTextAlignment(.center)
@@ -101,20 +84,28 @@ struct DetailView: View {
 
                 // ==========================
                 // MAIN IMAGE
+                // Includes zoom + animation
                 // ==========================
+                
                 Image("combo")
                     .resizable()
                     .scaledToFit()
                     .frame(height: 220)
                     .cornerRadius(20)
                     .shadow(radius: 8)
+
+                    // Combine pinch zoom + pulse animation
                     .scaleEffect(scale * (animate ? 1.02 : 1))
+
+                    // Pinch-to-zoom gesture
                     .gesture(
                         MagnificationGesture()
                             .onChanged { value in
                                 scale = value
                             }
                     )
+
+                    // Start animation when view appears
                     .onAppear {
                         withAnimation(
                             .easeInOut(duration: 1)
@@ -125,8 +116,9 @@ struct DetailView: View {
                     }
 
                 // ==========================
-                // TOGGLE FOUND
+                // MARK AS FOUND TOGGLE
                 // ==========================
+                
                 Toggle("Mark As Found", isOn: $item.found)
                     .padding()
                     .background(Color.blue.opacity(0.1))
@@ -136,6 +128,7 @@ struct DetailView: View {
                 // ==========================
                 // SELECT IMAGE BUTTON
                 // ==========================
+                
                 Button {
                     showChoices = true
                 } label: {
@@ -150,6 +143,7 @@ struct DetailView: View {
                 // ==========================
                 // FOUND IMAGE DISPLAY
                 // ==========================
+                
                 if foundImage != "" {
 
                     Divider()
@@ -164,26 +158,22 @@ struct DetailView: View {
                         .clipped()
                         .clipShape(Circle())
                         .overlay(
-                            Circle()
-                                .stroke(Color.blue, lineWidth: 4)
+                            Circle().stroke(Color.blue, lineWidth: 4)
                         )
                         .shadow(radius: 8)
-
-                    Text("Great job! Item Found!")
-                        .foregroundColor(.green)
-                        .bold()
                 }
 
                 // ==========================
-                // NEW: FEEDBACK MESSAGE
+                // FEEDBACK MESSAGE
                 // ==========================
+                
                 if message != "" {
 
                     Text(message)
                         .font(.headline)
                         .padding()
                         .foregroundColor(
-                            message.contains("Correct") ? .green : .red
+                            item.found ? .green : .red
                         )
                 }
 
@@ -195,6 +185,7 @@ struct DetailView: View {
         // ==========================
         // IMAGE SELECTION SHEET
         // ==========================
+        
         .sheet(isPresented: $showChoices) {
 
             NavigationView {
@@ -225,23 +216,28 @@ struct DetailView: View {
                             }
 
                             // ==========================
-                            // NEW LOGIC: CHECK CORRECT/WRONG
+                            // FIXED LOGIC (NO HARDCODE)
+                            //
+                            // Correct vs Wrong is based ONLY
+                            // on whether item is marked found
                             // ==========================
+                            
                             .onTapGesture {
 
-                                if image == correctAnswer {
+                                // Save selected image
+                                foundImage = image
 
-                                    // Correct selection
-                                    foundImage = image
-                                    item.found = true
+                                // If user marked item as found → correct
+                                if item.found {
+
                                     message = "✅ Correct item found!"
 
                                 } else {
 
-                                    // Wrong selection
-                                    message = "❌ Wrong item, try again!"
+                                    message = "❌ Wrong item selected!"
                                 }
 
+                                // Close sheet
                                 showChoices = false
                             }
                         }
