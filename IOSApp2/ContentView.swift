@@ -2,15 +2,34 @@
 // ===========================
 // ContentView.swift
 // IOSApp2
+// Assignment 4
 // ===========================
-// Main screen of the scavenger hunt app
-// Displays:
 //
-// - App title
-// - Progress count
-// - Reward message
-// - List of scavenger hunt items
-// - Navigation to detail pages
+// Purpose:
+//
+// Main screen of the Scavenger Hunt App
+//
+// Features:
+//
+// • App Title
+// • Progress Tracking
+// • Reward System
+// • Styled User Interface
+// • GeometryReader Layout
+// • Navigation to Detail Pages
+// • Navigation to Completion Screen
+//
+// Concepts Demonstrated:
+//
+// • NavigationView
+// • NavigationLink
+// • GeometryReader
+// • ObservableObject
+// • @StateObject
+// • List
+// • VStack / HStack
+// • LinearGradient
+//
 // ===========================
 
 import SwiftUI
@@ -18,183 +37,202 @@ import SwiftUI
 struct ContentView: View {
 
     // ======================================
-    // Creates ONE shared ViewModel object
-    // StateObject keeps data alive while app runs
+    // Shared ViewModel
+    //
+    // Stores all scavenger hunt data
+    // and updates UI automatically
     // ======================================
 
     @StateObject private var vm = ScavengerViewModel()
 
     var body: some View {
 
-        // ============================================
-        // NavigationView allows moving between screens
-        // ============================================
-
         NavigationView {
 
-            // ================================================
-            // Vertical stack places views top → bottom
-            // ================================================
+            GeometryReader { geo in
 
-            VStack {
+                VStack(spacing: 15) {
 
-                // =============================================
-                // App title
-                // ==============================================
+                    // ==================================
+                    // App Title
+                    // ==================================
 
-                Text("Scavenger Hunt")
+                    Text("Scavenger Hunt")
 
-                    .font(.largeTitle)
+                        .font(.largeTitle)
 
-                    .bold()
+                        .bold()
 
+                        .foregroundColor(.white)
 
-                // ===============================================
-                // Progress counter
-                // Example:
-                // Found: 4/10
-                // ===============================================
-
-                Text(
-
-                    "Found: \(vm.foundCount)/10"
-
-                )
+                        .padding(.top)
 
 
-                // ===============================================
-                // Reward message from ViewModel
-                //
-                // Examples:
-                //
-                // Keep Searching!
-                // 10% Discount
-                // 20% Discount
-                //  ================================================
+                    // ==================================
+                    // Progress Counter
+                    // Example:
+                    // Found: 3 / 10
+                    // ==================================
 
-                Text(vm.reward)
+                    Text("Found: \(vm.foundCount)/10")
 
-                    .foregroundColor(.blue)
+                        .font(.headline)
 
-                    .padding()
+                        .foregroundColor(.white)
 
 
-                // ==================================================
-                // List automatically scrolls
-                //
-                // Creates all scavenger hunt rows
-                // =================================================
+                    // ==================================
+                    // Reward Message
+                    // ==================================
 
-                List {
+                    Text(vm.reward)
 
-                    // ===============================================
-                    // Loop through all items
+                        .font(.title3)
+
+                        .foregroundColor(.yellow)
+
+                        .padding(.bottom)
+
+
+                    // ==================================
+                    // Completion Screen Link
                     //
-                    // indices gives:
-                    // 0,1,2,3...
-                    // ================================================
+                    // Only appears after all
+                    // 10 items are found
+                    // ==================================
 
-                    ForEach(
+                    if vm.foundCount == 10 {
 
-                        vm.items.indices,
+                        NavigationLink {
 
-                        id:\.self
+                            CompletionView(
 
-                    ) { index in
+                                reward: vm.reward
 
+                            )
 
-                        // ==============================================
-                        // Clicking row opens DetailView
-                        // ==============================================
+                        } label: {
 
-                        NavigationLink(
+                            Text("View Reward")
 
-                            destination:
+                                .font(.headline)
 
-                                DetailView(
+                                .foregroundColor(.white)
 
-                                    item:
+                                .padding()
 
-                                    $vm.items[index]
+                                .background(.green)
 
-                                )
+                                .cornerRadius(12)
 
-                        ) {
+                        }
 
-
-                            // ================================================
-                            // Horizontal layout:
-                            //
-                            // [icon] text
-                            // ================================================
-
-                            HStack {
+                    }
 
 
-                                // =============================================
-                                // Show circle if not found
-                                //
-                                // Show checkmark if found
-                                // =============================================
+                    // ==================================
+                    // Scavenger Hunt Item List
+                    // ==================================
 
-                                Image(
+                    List {
 
-                                    systemName:
+                        ForEach(
 
-                                    vm.items[index].found
+                            vm.items.indices,
 
-                                    ?
+                            id: \.self
 
-                                    "checkmark.circle.fill"
+                        ) { index in
 
-                                    :
+                            NavigationLink(
 
-                                    "circle"
+                                destination:
 
-                                )
+                                    DetailView(
 
+                                        item:
 
-                                // ================================================
-                                // Stack title + clue vertically
-                                // ================================================
-
-                                VStack(
-
-                                    alignment:.leading
-
-                                ) {
-
-
-                                    // ============================================
-                                    // Item title
-                                    //
-                                    // Example:
-                                    // Coffee Shop
-                                    // =============================================
-
-                                    Text(
-
-                                        vm.items[index].title
+                                            $vm.items[index]
 
                                     )
 
+                            ) {
 
-                                    // ==============================================
-                                    // Smaller clue text
-                                    //
-                                    // Example:
-                                    // Find local coffee shop
-                                    // ===============================================
+                                HStack(spacing: 15) {
 
-                                    Text(
+                                    // ======================
+                                    // Found Status Icon
+                                    // ======================
 
-                                        vm.items[index].clue
+                                    Image(
+
+                                        systemName:
+
+                                        vm.items[index].found
+
+                                        ?
+
+                                        "checkmark.circle.fill"
+
+                                        :
+
+                                        "circle"
 
                                     )
 
-                                    .font(.caption)
+                                    .foregroundColor(
+
+                                        vm.items[index].found
+
+                                        ?
+
+                                        .green
+
+                                        :
+
+                                        .gray
+
+                                    )
+
+                                    .font(.title2)
+
+
+                                    // ======================
+                                    // Item Information
+                                    // ======================
+
+                                    VStack(
+
+                                        alignment: .leading,
+
+                                        spacing: 4
+
+                                    ) {
+
+                                        Text(
+
+                                            vm.items[index].title
+
+                                        )
+
+                                        .font(.headline)
+
+
+                                        Text(
+
+                                            vm.items[index].clue
+
+                                        )
+
+                                        .font(.caption)
+
+                                        .foregroundColor(.secondary)
+
+                                    }
 
                                 }
+
+                                .padding(.vertical, 5)
 
                             }
 
@@ -202,9 +240,41 @@ struct ContentView: View {
 
                     }
 
+                    .scrollContentBackground(.hidden)
+
                 }
 
+                .frame(
+
+                    width: geo.size.width,
+
+                    height: geo.size.height
+
+                )
+
+                .background(
+
+                    LinearGradient(
+
+                        colors: [
+
+                            .blue,
+
+                            .purple
+
+                        ],
+
+                        startPoint: .topLeading,
+
+                        endPoint: .bottomTrailing
+
+                    )
+
+                )
+
             }
+
+            .navigationBarHidden(true)
 
         }
 
@@ -214,7 +284,7 @@ struct ContentView: View {
 
 
 // ==========================================
-// Preview for Xcode canvas
+// Preview Provider
 // ==========================================
 
 struct ContentView_Previews: PreviewProvider {
