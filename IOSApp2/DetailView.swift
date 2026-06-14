@@ -2,59 +2,60 @@
 // =============================
 // DetailView.swift
 // IOSApp2
-// Assignment 4
+// Assignment 4 (A+ Version)
 // =============================
 //
 // Purpose:
 //
 // This screen shows detailed information
-// about a selected scavenger hunt item.
+// about a scavenger hunt item.
 //
-// The user can:
-// • Read the clue
-// • View the item image
-// • Mark the item as found
-// • Select a "found photo"
-// • Zoom the main image
-// • See animations and UI effects
+// User can:
+// • Read clue
+// • View main image
+// • Mark item as found
+// • Select a found image
+// • Zoom image (pinch gesture)
+// • See animations and feedback
 //
 // =============================
 
-import SwiftUI   // Import SwiftUI framework
+import SwiftUI
 
-// This view receives a scavenger item from ContentView
 struct DetailView: View {
 
     // ==========================================
-    // Binding connects this item to ContentView
-    // Changes here update the main list
+    // Binding from ContentView
+    //
+    // This allows changes here (found = true)
+    // to update the main list automatically
     // ==========================================
     @Binding var item: ScavengerItem
 
     // ==========================================
-    // Controls whether image selection sheet shows
+    // Controls sheet for selecting image
     // ==========================================
     @State private var showChoices = false
 
     // ==========================================
-    // Stores the image selected by the user
-    // Example: "coffee", "park", etc.
+    // Stores selected "found" image
     // ==========================================
     @State private var foundImage = ""
 
     // ==========================================
-    // Used for zoom gesture on main image
+    // Zoom scale for pinch gesture
     // ==========================================
     @State private var scale: CGFloat = 1.0
 
     // ==========================================
-    // Controls simple pulsing animation
+    // Controls pulse animation
     // ==========================================
     @State private var animate = false
 
     // ==========================================
-    // List of available images user can choose
+    // Available images for selection
     // ==========================================
+    
     let imageChoices = [
         "coffee",
         "restaurant",
@@ -68,9 +69,6 @@ struct DetailView: View {
         "grocery"
     ]
 
-    // ==========================================
-    // MAIN UI
-    // ==========================================
     var body: some View {
 
         ScrollView {
@@ -78,29 +76,28 @@ struct DetailView: View {
             VStack(spacing: 25) {
 
                 // ==========================
-                // ITEM TITLE
+                // TITLE
                 // ==========================
+                
                 Text(item.title)
-                    .font(.largeTitle)     // Big title
-                    .bold()                // Make text bold
+                    .font(.largeTitle)
+                    .bold()
                     .foregroundColor(.blue)
                     .padding(.top)
 
                 // ==========================
-                // ITEM CLUE TEXT
+                // CLUE TEXT
                 // ==========================
+                
                 Text(item.clue)
                     .font(.headline)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
 
                 // ==========================
-                // MAIN IMAGE SECTION
-                // Demonstrates:
-                // • Animation
-                // • Zoom gesture
-                // • Image styling
+                // MAIN IMAGE WITH ANIMATION + ZOOM
                 // ==========================
+                
                 Image("combo")
                     .resizable()
                     .scaledToFit()
@@ -108,13 +105,11 @@ struct DetailView: View {
                     .cornerRadius(20)
                     .shadow(radius: 8)
 
-                    // Zoom effect controlled by pinch gesture
-                    .scaleEffect(scale)
+                    // IMPORTANT FIX:
+                    // Combine zoom + pulse correctly
+                    .scaleEffect(scale * (animate ? 1.02 : 1))
 
-                    // Small pulse animation effect
-                    .scaleEffect(animate ? 1.02 : 1)
-
-                    // Detect pinch gesture to zoom image
+                    // PINCH ZOOM GESTURE
                     .gesture(
                         MagnificationGesture()
                             .onChanged { value in
@@ -122,7 +117,7 @@ struct DetailView: View {
                             }
                     )
 
-                    // Start animation when view appears
+                    // PULSE ANIMATION
                     .onAppear {
                         withAnimation(
                             .easeInOut(duration: 1)
@@ -133,8 +128,9 @@ struct DetailView: View {
                     }
 
                 // ==========================
-                // TOGGLE: MARK ITEM FOUND
+                // MARK AS FOUND TOGGLE
                 // ==========================
+                
                 Toggle("Mark As Found", isOn: $item.found)
                     .padding()
                     .background(Color.blue.opacity(0.1))
@@ -142,8 +138,9 @@ struct DetailView: View {
                     .padding(.horizontal)
 
                 // ==========================
-                // BUTTON: OPEN IMAGE PICKER
+                // SELECT IMAGE BUTTON
                 // ==========================
+                
                 Button {
                     showChoices = true
                 } label: {
@@ -156,7 +153,7 @@ struct DetailView: View {
                 .padding(.horizontal)
 
                 // ==========================
-                // SHOW SELECTED FOUND IMAGE
+                // FOUND IMAGE DISPLAY (A+ FIXED)
                 // ==========================
                 if foundImage != "" {
 
@@ -165,27 +162,41 @@ struct DetailView: View {
                     Text("Found Photo")
                         .font(.headline)
 
-                    // ==========================
-                    // FIXED IMAGE CIRCLE DISPLAY
-                    // • scaledToFill ensures full coverage
-                    // • clipped prevents overflow
-                    // • clipShape makes it circular
-                    // ==========================
-                    Image(foundImage)
-                        .resizable()
-                        .scaledToFill()     // Fill entire frame properly
-                        .frame(width: 200, height: 200)
-                        .clipped()          // IMPORTANT FIX: prevents overflow
-                        .clipShape(Circle())
-                        .overlay(
-                            Circle()
-                                .stroke(Color.blue, lineWidth: 4)
-                        )
-                        .shadow(radius: 8)
+                    ZStack {
+
+                        // ======================
+                        // GLOW BACKGROUND (A+ EFFECT)
+                        // ======================
+                        
+                        Circle()
+                            .fill(Color.blue.opacity(0.2))
+                            .frame(width: 220, height: 220)
+                            .blur(radius: 3)
+
+                        // ======================
+                        // MAIN FOUND IMAGE
+                        // ======================
+                        
+                        Image(foundImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 200, height: 200)
+                            .clipped()
+                            .clipShape(Circle())
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.blue, lineWidth: 4)
+                            )
+                            .shadow(radius: 10)
+                            .scaleEffect(animate ? 1.05 : 1)
+                            .animation(.easeInOut(duration: 1).repeatForever(),
+                                       value: animate)
+                    }
 
                     // ==========================
                     // SUCCESS MESSAGE
                     // ==========================
+                    
                     Text("Great job! Item Found!")
                         .foregroundColor(.green)
                         .bold()
@@ -196,9 +207,10 @@ struct DetailView: View {
             .padding()
         }
 
-        // ==========================================
-        // SHEET: IMAGE SELECTION GRID
-        // ==========================================
+        // ==========================
+        // IMAGE SELECTION SHEET
+        // ==========================
+        
         .sheet(isPresented: $showChoices) {
 
             NavigationView {
@@ -213,12 +225,10 @@ struct DetailView: View {
                         spacing: 20
                     ) {
 
-                        // Loop through available images
                         ForEach(imageChoices, id: \.self) { image in
 
                             VStack {
 
-                                // Show image option
                                 Image(image)
                                     .resizable()
                                     .scaledToFit()
@@ -226,12 +236,10 @@ struct DetailView: View {
                                     .cornerRadius(12)
                                     .shadow(radius: 3)
 
-                                // Image label
                                 Text(image)
                                     .font(.caption)
                             }
 
-                            // When user taps an image
                             .onTapGesture {
 
                                 // Save selected image
@@ -254,8 +262,9 @@ struct DetailView: View {
 }
 
 // =============================
-// PREVIEW SECTION
+// PREVIEW
 // =============================
+
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
         DetailView(
