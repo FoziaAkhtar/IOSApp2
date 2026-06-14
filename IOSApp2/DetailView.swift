@@ -7,75 +7,55 @@
 //
 // Purpose:
 //
-// Displays details for one
-// scavenger hunt item.
+// This screen shows detailed information
+// about a selected scavenger hunt item.
 //
-// Features:
-//
-// • Shows title and clue
-// • Displays scavenger image
-// • Allows item to be marked found
-// • Lets user select a found image
-// • Shows selected image
-// • Zoom gesture
-// • Animation
-// • Grid layout
-// • Styled UI
-//
-// Concepts Demonstrated:
-//
-// • @Binding
-// • @State
-// • ScrollView
-// • LazyVGrid
-// • Sheet
-// • Gesture
-// • Animation
-// • Image Styling
+// The user can:
+// • Read the clue
+// • View the item image
+// • Mark the item as found
+// • Select a "found photo"
+// • Zoom the main image
+// • See animations and UI effects
 //
 // =============================
 
-import SwiftUI
+import SwiftUI   // Import SwiftUI framework
 
+// This view receives a scavenger item from ContentView
 struct DetailView: View {
 
     // ==========================================
-    // Receives selected scavenger hunt item
-    // from ContentView
+    // Binding connects this item to ContentView
+    // Changes here update the main list
     // ==========================================
-
     @Binding var item: ScavengerItem
 
     // ==========================================
-    // Controls image selection popup
+    // Controls whether image selection sheet shows
     // ==========================================
-
     @State private var showChoices = false
 
     // ==========================================
-    // Stores image selected by user
+    // Stores the image selected by the user
+    // Example: "coffee", "park", etc.
     // ==========================================
-
     @State private var foundImage = ""
 
     // ==========================================
-    // Used for zoom gesture
+    // Used for zoom gesture on main image
     // ==========================================
-
     @State private var scale: CGFloat = 1.0
 
     // ==========================================
-    // Used for simple animation
+    // Controls simple pulsing animation
     // ==========================================
-
     @State private var animate = false
 
     // ==========================================
-    // Available scavenger hunt images
+    // List of available images user can choose
     // ==========================================
-
     let imageChoices = [
-
         "coffee",
         "restaurant",
         "library",
@@ -86,340 +66,206 @@ struct DetailView: View {
         "bookstore",
         "pharmacy",
         "grocery"
-
     ]
 
+    // ==========================================
+    // MAIN UI
+    // ==========================================
     var body: some View {
 
         ScrollView {
 
             VStack(spacing: 25) {
 
-                // ==================================
-                // Item Title
-                // ==================================
-
+                // ==========================
+                // ITEM TITLE
+                // ==========================
                 Text(item.title)
-
-                    .font(.largeTitle)
-
-                    .bold()
-
+                    .font(.largeTitle)     // Big title
+                    .bold()                // Make text bold
                     .foregroundColor(.blue)
-
                     .padding(.top)
 
-                // ==================================
-                // Item Clue
-                // ==================================
-
+                // ==========================
+                // ITEM CLUE TEXT
+                // ==========================
                 Text(item.clue)
-
                     .font(.headline)
-
                     .multilineTextAlignment(.center)
-
                     .padding(.horizontal)
 
-                // ==================================
-                // Main Scavenger Hunt Image
-                //
+                // ==========================
+                // MAIN IMAGE SECTION
                 // Demonstrates:
-                // • Image Styling
                 // • Animation
-                // • Gesture
-                // ==================================
-
+                // • Zoom gesture
+                // • Image styling
+                // ==========================
                 Image("combo")
-
                     .resizable()
-
                     .scaledToFit()
-
                     .frame(height: 220)
-
                     .cornerRadius(20)
-
                     .shadow(radius: 8)
 
+                    // Zoom effect controlled by pinch gesture
                     .scaleEffect(scale)
 
+                    // Small pulse animation effect
                     .scaleEffect(animate ? 1.02 : 1)
 
+                    // Detect pinch gesture to zoom image
                     .gesture(
-
                         MagnificationGesture()
-
-                            .onChanged {
-
-                                scale = $0
-
+                            .onChanged { value in
+                                scale = value
                             }
-
                     )
 
+                    // Start animation when view appears
                     .onAppear {
-
                         withAnimation(
-
                             .easeInOut(duration: 1)
-
-                            .repeatForever(
-
-                                autoreverses: true
-
-                            )
-
+                            .repeatForever(autoreverses: true)
                         ) {
-
                             animate = true
-
                         }
-
                     }
 
-                // ==================================
-                // Found Toggle
-                // ==================================
-
-                Toggle(
-
-                    "Mark As Found",
-
-                    isOn: $item.found
-
-                )
-
-                .padding()
-
-                .background(
-
-                    Color.blue.opacity(0.1)
-
-                )
-
-                .cornerRadius(12)
-
-                .padding(.horizontal)
-
-                // ==================================
-                // Upload Button
-                // ==================================
-
-                Button {
-
-                    showChoices = true
-
-                } label: {
-
-                    Label(
-
-                        "Select Found Photo",
-
-                        systemImage: "photo"
-
-                    )
-
-                    .font(.headline)
-
+                // ==========================
+                // TOGGLE: MARK ITEM FOUND
+                // ==========================
+                Toggle("Mark As Found", isOn: $item.found)
                     .padding()
+                    .background(Color.blue.opacity(0.1))
+                    .cornerRadius(12)
+                    .padding(.horizontal)
 
-                    .frame(maxWidth: .infinity)
-
+                // ==========================
+                // BUTTON: OPEN IMAGE PICKER
+                // ==========================
+                Button {
+                    showChoices = true
+                } label: {
+                    Label("Select Found Photo", systemImage: "photo")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
                 }
-
                 .buttonStyle(.borderedProminent)
-
                 .padding(.horizontal)
 
-                // ==================================
-                // Show selected image
-                // ==================================
-
+                // ==========================
+                // SHOW SELECTED FOUND IMAGE
+                // ==========================
                 if foundImage != "" {
 
                     Divider()
 
                     Text("Found Photo")
-
                         .font(.headline)
 
+                    // ==========================
+                    // FIXED IMAGE CIRCLE DISPLAY
+                    // • scaledToFill ensures full coverage
+                    // • clipped prevents overflow
+                    // • clipShape makes it circular
+                    // ==========================
                     Image(foundImage)
-
                         .resizable()
-
-                        .scaledToFill()
-
-                        .frame(
-
-                            width: 200,
-
-                            height: 200
-
-                        )
-
+                        .scaledToFill()     // Fill entire frame properly
+                        .frame(width: 200, height: 200)
+                        .clipped()          // IMPORTANT FIX: prevents overflow
                         .clipShape(Circle())
-
                         .overlay(
-
                             Circle()
-
-                                .stroke(
-
-                                    Color.blue,
-
-                                    lineWidth: 4
-
-                                )
-
+                                .stroke(Color.blue, lineWidth: 4)
                         )
-
                         .shadow(radius: 8)
 
-                    // ==============================
-                    // Found confirmation message
-                    // ==============================
-
+                    // ==========================
+                    // SUCCESS MESSAGE
+                    // ==========================
                     Text("Great job! Item Found!")
-
                         .foregroundColor(.green)
-
                         .bold()
-
                 }
 
                 Spacer()
-
             }
-
             .padding()
-
         }
 
         // ==========================================
-        // Image Selection Sheet
+        // SHEET: IMAGE SELECTION GRID
         // ==========================================
-
         .sheet(isPresented: $showChoices) {
 
             NavigationView {
 
                 ScrollView {
 
-                    // ==============================
-                    // Grid Layout
-                    // ==============================
-
                     LazyVGrid(
-
                         columns: [
-
                             GridItem(.flexible()),
-
                             GridItem(.flexible())
-
                         ],
-
                         spacing: 20
-
                     ) {
 
-                        ForEach(
-
-                            imageChoices,
-
-                            id: \.self
-
-                        ) { image in
+                        // Loop through available images
+                        ForEach(imageChoices, id: \.self) { image in
 
                             VStack {
 
+                                // Show image option
                                 Image(image)
-
                                     .resizable()
-
                                     .scaledToFit()
-
-                                    .frame(
-
-                                        width: 120,
-
-                                        height: 120
-
-                                    )
-
+                                    .frame(width: 120, height: 120)
                                     .cornerRadius(12)
-
                                     .shadow(radius: 3)
 
+                                // Image label
                                 Text(image)
-
                                     .font(.caption)
-
                             }
 
-                            // ==========================
-                            // User selects image
-                            // ==========================
-
+                            // When user taps an image
                             .onTapGesture {
 
+                                // Save selected image
                                 foundImage = image
 
+                                // Mark item as found in main list
                                 item.found = true
 
+                                // Close sheet
                                 showChoices = false
-
                             }
-
                         }
-
                     }
-
                     .padding()
-
                 }
-
-                .navigationTitle(
-
-                    "Choose Found Item"
-
-                )
-
+                .navigationTitle("Choose Found Item")
             }
-
         }
-
     }
-
 }
 
-// ==========================================
-// Preview
-// ==========================================
-
+// =============================
+// PREVIEW SECTION
+// =============================
 struct DetailView_Previews: PreviewProvider {
-
     static var previews: some View {
-
         DetailView(
-
             item: .constant(
-
                 ScavengerItem(
-
                     title: "Coffee Shop",
-
                     clue: "Find a local coffee shop",
-
                     imageName: "coffee"
-
                 )
-
             )
-
         )
-
     }
-
 }
