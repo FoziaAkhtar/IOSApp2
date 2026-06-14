@@ -23,6 +23,7 @@ struct CompletionView: View {
     // This variable holds the reward text passed from previous screen
     // Example: "You earned a Gold Badge!"
     // ===================================================
+    
     var reward: String
 
     // State variable used to control animation
