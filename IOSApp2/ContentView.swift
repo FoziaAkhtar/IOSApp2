@@ -2,7 +2,7 @@
 // ===========================
 // ContentView.swift
 // IOSApp2
-// Assignment 4 (A+ Version)
+// Assignment 4 
 // ===========================
 //
 // Purpose:

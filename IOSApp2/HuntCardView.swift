@@ -3,111 +3,56 @@
 // HuntCardView.swift
 // IOSApp2
 // ==========================
-// Reusable card component
 //
 // Purpose:
 //
-// Displays scavenger hunt items
-// inside a styled card
+// Reusable card component used
+// to display scavenger hunt items
 //
-// Example:
-//
-// ----------------------
-// |   Coffee Shop      |
-// ----------------------
-//
-// Reusable means:
-//
-// HuntCardView(title:"Coffee")
-// HuntCardView(title:"Library")
-//
-// can both use same design
+// This improves UI consistency
+// across the app
 // ==========================
 
 import SwiftUI
 
 struct HuntCardView: View {
 
-    // ================================================
-    // Receives title text from another screen
-    //
-    // Example:
-    //
-    // HuntCardView(
-    //     title:"Coffee Shop"
-    // )
-    // ================================================
-
-    var title:String
-
-
-    // ===============================================
-    // UI displayed on screen
-    // ===============================================
+    // Title passed from parent view
+    var title: String
 
     var body: some View {
 
+        VStack(alignment: .leading, spacing: 10) {
 
-        // ================================================
-        // VStack stacks items vertically
-        //
-        // Current card only has text
-        // but more items can be added later
-        // ================================================
-
-        VStack {
-
-
-            // =======================================
-            // Display card title
-            // =======================================
-
+            // ==========================
+            // TITLE TEXT
+            // ==========================
             Text(title)
-
-                // ==================================
-                // Larger font size
-                // ==================================
-            
                 .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
 
-
-                // =======================================
-                // Adds spacing around text
-                // ========================================
-
-                .padding()
+            Spacer()
 
         }
+        .padding()
 
+        // ==========================
+        // FULL WIDTH CARD
+        // ==========================
+        .frame(maxWidth: .infinity, alignment: .leading)
 
-        // ================================================
-        // Makes card stretch horizontally
-        // ================================================
-
-        .frame(
-
-            maxWidth:.infinity
-
-        )
-
-
-        // ================================================
-        // Adds light blue background
-        // ================================================
-
+        // ==========================
+        // CARD BACKGROUND STYLE
+        // ==========================
         .background(
-
-            .blue.opacity(0.2)
-
+            RoundedRectangle(cornerRadius: 15)
+                .fill(Color.blue.opacity(0.15))
         )
 
-
-        // ================================================
-        // Rounds card corners
-        // ================================================
-
-        .cornerRadius(15)
-
+        // ==========================
+        // SHADOW FOR DEPTH (A+ LOOK)
+        // ==========================
+        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 3)
     }
-
 }

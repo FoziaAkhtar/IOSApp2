@@ -2,7 +2,7 @@
 // =============================
 // DetailView.swift
 // IOSApp2
-// Assignment 4 (Polished A+ Version)
+// Assignment 4 
 // =============================
 //
 // PURPOSE:
