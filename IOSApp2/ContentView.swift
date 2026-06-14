@@ -61,7 +61,14 @@ struct ContentView: View {
                     Text("Found: \(vm.foundCount)/10")
                         .font(.headline)
                         .foregroundColor(.white)
-
+                    
+                    
+                    // Visual progress bar
+                    ProgressView(value: Double(vm.foundCount), total: 10)
+                        .tint(.green)
+                        .padding(.horizontal)
+                        .padding(.bottom, 5)
+                    
                     // ==========================
                     // REWARD MESSAGE
                     //
@@ -82,21 +89,25 @@ struct ContentView: View {
                     if vm.foundCount == 10 {
 
                         NavigationLink {
-
+ 
+                            // ============================
                             // Navigate to reward screen
-                            CompletionView(reward: vm.reward)
-
-                        } label: {
-
-                            Text("View Reward")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.green)
-                                .cornerRadius(12)
-                        }
-                    }
-
+                            // ============================
+                            
+                            NavigationLink {
+                                CompletionView(reward: vm.reward)
+                            } label: {
+                                Text(vm.foundCount == 10 ? "View Reward 🎉" : "Keep Searching")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(vm.foundCount == 10 ? Color.green : Color.gray)
+                                    .cornerRadius(12)
+                            }
+                            .disabled(vm.foundCount < 10)
+                            .padding(.horizontal)
+                            
                     // ==========================
                     // SCAVENGER LIST
                     // ==========================
