@@ -1,6 +1,7 @@
+
 // =======================
-//  IOSApp2App.swift
-// ========================
+// IOSApp2App.swift
+// =======================
 
 import SwiftUI
 
@@ -8,7 +9,17 @@ import SwiftUI
 struct IOSApp2App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+
+            // =====================================
+            // STARTING SCREEN OF THE APP
+            //
+            // Changed from ContentView to WelcomeView
+            //
+            // This makes WelcomeView the first screen
+            // user sees when the app opens
+            // =====================================
+            WelcomeView()
+
         }
     }
 }
